@@ -1,4 +1,4 @@
-﻿using Model;
+﻿using Model.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +9,11 @@ namespace Repository.Common
 {
     public interface IVehicleMakeRepository : IDisposable
     {
-        IEnumerable<VehicleMake> GetVehicleMakes();
-        VehicleMake GetVehicleMakeById(int id);
-        void InsertVehicleMake(VehicleMake vehicleMake);
-        void DeleteVehicleMake(int id);
-        void UpdateVehicleMake(VehicleMake vehicleMake);
+        IEnumerable<IVehicleMake> GetVehicleMakesAsync();
+        IVehicleMake GetVehicleMakeByIdAsync(int id);
+        void InsertVehicleMakeAsync(IVehicleMake vehicleMake);
+        void DeleteVehicleMakeAsync(int id);
+        void UpdateVehicleMakeAsync(IVehicleMake vehicleMake);
         void Save();
     }
 }
