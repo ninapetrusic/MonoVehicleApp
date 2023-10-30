@@ -9,11 +9,10 @@ namespace Repository.Common
 {
     public interface IVehicleMakeRepository : IDisposable
     {
-        IEnumerable<IVehicleMake> GetVehicleMakesAsync();
-        IVehicleMake GetVehicleMakeByIdAsync(int id);
-        void InsertVehicleMakeAsync(IVehicleMake vehicleMake);
-        void DeleteVehicleMakeAsync(int id);
-        void UpdateVehicleMakeAsync(IVehicleMake vehicleMake);
-        void Save();
+        Task<IEnumerable<IVehicleMake>> GetVehicleMakesAsync();
+        Task<IVehicleMake> GetVehicleMakeByIdAsync(int id);
+        Task InsertVehicleMakeAsync(IVehicleMake vehicleMake);
+        Task DeleteVehicleMakeAsync(int id);
+        Task UpdateVehicleMakeAsync(int id, IVehicleMake vehicleMake);
     }
 }
