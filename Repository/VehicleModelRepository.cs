@@ -10,9 +10,12 @@ namespace Repository
 {
     public class VehicleModelRepository : IVehicleModelRepository
     {
-        public void DeleteVehicleModelAsync(int id)
+        private VehicleContext _context;
+        public async Task DeleteVehicleModelAsync(int id)
         {
-            throw new NotImplementedException();
+            IVehicleModel? vehicleModel = await _getVehicleModelById(id);
+            _context.VehicleModels.Remove(vehicleModel);
+            await _context.SaveChangesAsync().ConfigureAwait(true);
         }
 
         public void Dispose()
@@ -20,29 +23,47 @@ namespace Repository
             throw new NotImplementedException();
         }
 
-        public IVehicleModel GetVehicleModelByIdAsync(int id)
+        public async Task<IVehicleModel> GetVehicleModelByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _getVehicleModelById(id).ConfigureAwait(true);
         }
 
-        public IEnumerable<IVehicleModel> GetVehicleModelsAsync()
+        public async Task<IEnumerable<IVehicleModel>> GetVehicleModelsAsync()
         {
-            throw new NotImplementedException();
+            return await _context.VehicleModels
+                .ToListAsync().ConfigureAwait(true);
         }
 
-        public void InsertVehicleModelAsync(IVehicleModel vehicleModel)
+        public async Task InsertVehicleModelAsync(IVehicleModel vehicleModel)
         {
-            throw new NotImplementedException();
+            //TODO: validation
+            //TODO: auto mapper
+            /*
+            IVehicleModel vehicleModelNew = _mapper.Map<VehicleModel>(vehicleModel);
+            _context.VehicleModels.Add(vehicleModelNew);
+            */
+            await _context.SaveChangesAsync().ConfigureAwait(true);
         }
 
-        public void Save()
+        public async Task UpdateVehicleModelAsync(int id, IVehicleModel vehicleModel)
         {
-            throw new NotImplementedException();
+            IVehicleModel? vehicleModelOld = await _getVehicleModelById(id).ConfigureAwait(true);
+            //TODO: validation
+            //TODO: auto mapper
+            /*
+            _mapper.Map(vehicleModel, vehicleModelOld);
+            _context.VehicleModels.Update(vehicleModelOld);
+            */
+            await _context.SaveChangesAsync();
         }
 
-        public void UpdateVehicleModelAsync(IVehicleModel vehicleModel)
+        private async Task<IVehicleModel> _getVehicleModelById(int id)
         {
-            throw new NotImplementedException();
+            IVehicleModel? vehicleModel = await _context.VehicleModels
+                .AsNoTracking().Where(x => x.Id == id)
+                .FirstOrDefaultAsync().ConfigureAwait(true);
+            if (vehicleModel == null)
+                throw new KeyNotFoundException("VehicleModel not found");
         }
     }
 }

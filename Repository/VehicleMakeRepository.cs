@@ -10,9 +10,12 @@ namespace Repository
 {
     public class VehicleMakeRepository : IVehicleMakeRepository
     {
-        public void DeleteVehicleMakeAsync(int id)
+        private VehicleContext _context;
+        public async Task DeleteVehicleMakeAsync(int id)
         {
-            throw new NotImplementedException();
+            IVehicleMake? vehicleMake = await _getVehicleMakeById(id);
+            _context.VehicleMakes.Remove(vehicleMake);
+            await _context.SaveChangesAsync().ConfigureAwait(true);
         }
 
         public void Dispose()
@@ -20,29 +23,48 @@ namespace Repository
             throw new NotImplementedException();
         }
 
-        public IVehicleMake GetVehicleMakeByIdAsync(int id)
+        public async Task<IVehicleMake> GetVehicleMakeByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _getVehicleMakeById(id).ConfigureAwait(true);
         }
 
-        public IEnumerable<IVehicleMake> GetVehicleMakesAsync()
+        public async Task<IEnumerable<IVehicleMake>> GetVehicleMakesAsync()
         {
-            throw new NotImplementedException();
+            return await _context.VehicleMakes.
+                ToListAsync().ConfigureAwait(true);
+
         }
 
-        public void InsertVehicleMakeAsync(IVehicleMake vehicleMake)
+        public async Task InsertVehicleMakeAsync(IVehicleMake vehicleMake)
         {
-            throw new NotImplementedException();
+            //TODO: validation
+            //TODO: auto mapper
+            /*
+            IVehicleMake vehicleMakeNew = _mapper.Map<VehicleMake>(vehicleMake);
+            _context.VehicleMakes.Add(vehicleMakeNew);
+            */
+            await _context.SaveChangesAsync().ConfigureAwait(true);
+        }
+        public async Task UpdateVehicleMakeAsync(int id, IVehicleMake vehicleMake)
+        {
+            IVehicleMake? vehicleMakeOld = await _getVehicleMakeById(id).ConfigureAwait(true);
+            // TODO: validation
+            // TODO: auto mapper
+            /*
+            _mapper.Map(vehicleMake, vehicleMakeOld);
+            _context.VehicleMakes.Update(vehicleMakeOld);
+            */
+            await _context.SaveChangesAsync();
         }
 
-        public void Save()
+        private async Task<IVehicleMake> _getVehicleMakeById(int id)
         {
-            throw new NotImplementedException();
-        }
-
-        public void UpdateVehicleMakeAsync(IVehicleMake vehicleMake)
-        {
-            throw new NotImplementedException();
+            IVehicleMake? vehicleMake = await _context.VehicleMakes
+                .AsNoTracking().Where(x => x.Id == id)
+                .FirstOrDefaultAsync().ConfigureAwait(true);
+            if (vehicleMake == null)
+                throw new KeyNotFoundException("VehicleMake not found");
+            return vehicleMake;
         }
     }
 }
