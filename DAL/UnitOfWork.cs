@@ -12,7 +12,7 @@ namespace DAL
         public UnitOfWork(VehicleContext vehicleContext)
         {
             if (vehicleContext == null)
-                throw new ArgumentNullException("VehicleContext")
+                throw new ArgumentNullException("VehicleContext");
             this.vehicleContext = vehicleContext;
         }
 

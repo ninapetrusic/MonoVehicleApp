@@ -11,36 +11,36 @@ namespace Service
 {
     public class VehicleMakeService : IVehicleMakeService
     {
-        IVehicleMakeRepository vehicleMakeRepository;
+        private IVehicleMakeRepository vehicleMakeRepository;
 
         public VehicleMakeService(IVehicleMakeRepository vehicleMakeRepository)
         {
             this.vehicleMakeRepository = vehicleMakeRepository;
         }
 
-        public async Task<bool> DeleteVehicleMakeAsync(int id)
+        public async Task DeleteVehicleMakeAsync(int id)
         {
-            return await vehicleMakeRepository.DeleteVehicleMakeAsync(id);
+            await vehicleMakeRepository.DeleteVehicleMakeAsync(id);
         }
 
-        public Task<IVehicleMake> GetVehicleMakeByIdAsync(int id)
+        public async Task<IVehicleMake> GetVehicleMakeByIdAsync(int id)
         {
             return await vehicleMakeRepository.GetVehicleMakeByIdAsync(id);
         }
 
-        public async Task<List<IVehicleMake>> GetVehicleMakesAsync()
+        public async Task<IEnumerable<IVehicleMake>> GetVehicleMakesAsync()
         {
             return await vehicleMakeRepository.GetVehicleMakesAsync();
         }
 
-        public async Task<string> InsertVehicleMakeAsync(IVehicleMake vehicleMake)
+        public async Task InsertVehicleMakeAsync(IVehicleMake vehicleMake)
         {
-            return await vehicleMakeRepository.InsertVehicleMakeAsync(vehicleMake);
+            await vehicleMakeRepository.InsertVehicleMakeAsync(vehicleMake);
         }
 
-        public async Task<string> UpdateVehicleMakeAsync(int id, IVehicleMake vehicleMake)
+        public async Task UpdateVehicleMakeAsync(int id, IVehicleMake vehicleMake)
         {
-            return await vehicleMakeRepository.UpdateVehicleMakeAsync(id, vehicleMake);
+            await vehicleMakeRepository.UpdateVehicleMakeAsync(id, vehicleMake);
         }
     }
 }

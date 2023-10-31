@@ -11,14 +11,14 @@ namespace Service
 {
     public class VehicleModelService : IVehicleModelService
     {
-        IVehicleModelRepository vehicleModelRepository;
+        private IVehicleModelRepository vehicleModelRepository;
         public VehicleModelService(IVehicleModelRepository vehicleModelRepository)
         {
             this.vehicleModelRepository = vehicleModelRepository;
         }
-        public async Task<bool> DeleteVehicleModelAsync(int id)
+        public async Task DeleteVehicleModelAsync(int id)
         {
-            return await vehicleModelRepository.DeleteVehicleModelAsync(id);
+            await vehicleModelRepository.DeleteVehicleModelAsync(id);
         }
 
         public async Task<IVehicleModel> GetVehicleModelByIdAsync(int id)
@@ -26,19 +26,19 @@ namespace Service
             return await vehicleModelRepository.GetVehicleModelByIdAsync(id);
         }
 
-        public async Task<List<IVehicleModel>> GetVehicleModelsAsync()
+        public async Task<IEnumerable<IVehicleModel>> GetVehicleModelsAsync()
         {
             return await vehicleModelRepository.GetVehicleModelsAsync();
         }
 
-        public async Task<string> InsertVehicleModelAsync(IVehicleModel vehicleModel)
+        public async Task InsertVehicleModelAsync(IVehicleModel vehicleModel)
         {
-            return await vehicleModelRepository.InsertVehicleModelAsync(vehicleModel);
+            await vehicleModelRepository.InsertVehicleModelAsync(vehicleModel);
         }
 
-        public async Task<string> UpdateVehicleModelAsync(int id, IVehicleModel vehicleModel)
+        public async Task UpdateVehicleModelAsync(int id, IVehicleModel vehicleModel)
         {
-            return await vehicleModelRepository.UpdateVehicleModelAsync(id, vehicleModel);
+            await vehicleModelRepository.UpdateVehicleModelAsync(id, vehicleModel);
         }
     }
 }

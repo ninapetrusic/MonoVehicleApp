@@ -1,4 +1,7 @@
-﻿using Model.Common;
+﻿using AutoMapper;
+using DAL;
+using Microsoft.EntityFrameworkCore;
+using Model.Common;
 using Repository.Common;
 using System;
 using System.Collections.Generic;
@@ -10,11 +13,21 @@ namespace Repository
 {
     public class VehicleModelRepository : IVehicleModelRepository
     {
+        private readonly IMapper _mapper;
         private VehicleContext _context;
+
+        public VehicleModelRepository(IMapper mapper, VehicleContext context)
+        {
+            _mapper = mapper;
+            _context = context;
+        }
+
         public async Task DeleteVehicleModelAsync(int id)
         {
             IVehicleModel? vehicleModel = await _getVehicleModelById(id);
-            _context.VehicleModels.Remove(vehicleModel);
+            //map Model.VehicleModel to DAL.VehicleModel
+            VehicleModel vehicleModelMapped = _mapper.Map<VehicleModel>(vehicleModel);
+            _context.Models.Remove(vehicleModelMapped);
             await _context.SaveChangesAsync().ConfigureAwait(true);
         }
 
@@ -30,18 +43,15 @@ namespace Repository
 
         public async Task<IEnumerable<IVehicleModel>> GetVehicleModelsAsync()
         {
-            return await _context.VehicleModels
+            return await _mapper.Map<DbSet<IVehicleModel>>(_context.Models)
                 .ToListAsync().ConfigureAwait(true);
         }
 
         public async Task InsertVehicleModelAsync(IVehicleModel vehicleModel)
         {
             //TODO: validation
-            //TODO: auto mapper
-            /*
-            IVehicleModel vehicleModelNew = _mapper.Map<VehicleModel>(vehicleModel);
-            _context.VehicleModels.Add(vehicleModelNew);
-            */
+
+            _context.Models.Add(_mapper.Map<VehicleModel>(vehicleModel)); ;
             await _context.SaveChangesAsync().ConfigureAwait(true);
         }
 
@@ -49,21 +59,22 @@ namespace Repository
         {
             IVehicleModel? vehicleModelOld = await _getVehicleModelById(id).ConfigureAwait(true);
             //TODO: validation
-            //TODO: auto mapper
-            /*
+           
             _mapper.Map(vehicleModel, vehicleModelOld);
-            _context.VehicleModels.Update(vehicleModelOld);
-            */
+            _context.Models.Update(_mapper.Map<VehicleModel>(vehicleModelOld));
             await _context.SaveChangesAsync();
         }
 
         private async Task<IVehicleModel> _getVehicleModelById(int id)
         {
-            IVehicleModel? vehicleModel = await _context.VehicleModels
+            VehicleModel? vehicleModel = await _context.Models
                 .AsNoTracking().Where(x => x.Id == id)
                 .FirstOrDefaultAsync().ConfigureAwait(true);
-            if (vehicleModel == null)
+            //map DAL.VehicleModel to Model.VehicleModel
+            IVehicleModel vehicleModelMapped = _mapper.Map<IVehicleModel>(vehicleModel);
+            if (vehicleModelMapped == null)
                 throw new KeyNotFoundException("VehicleModel not found");
+            return vehicleModelMapped;
         }
     }
 }

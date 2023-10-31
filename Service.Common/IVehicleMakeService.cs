@@ -9,10 +9,10 @@ namespace Service.Common
 {
     public interface IVehicleMakeService
     {
-        Task<List<IVehicleMake>> GetVehicleMakesAsync();
+        Task<IEnumerable<IVehicleMake>> GetVehicleMakesAsync();
         Task<IVehicleMake> GetVehicleMakeByIdAsync(int id);
-        Task<string> InsertVehicleMakeAsync(IVehicleMake vehicleMake);
-        Task<string> UpdateVehicleMakeAsync(int id, IVehicleMake vehicleMake);
-        Task<bool> DeleteVehicleMakeAsync(int id);
+        Task InsertVehicleMakeAsync(IVehicleMake vehicleMake);
+        Task UpdateVehicleMakeAsync(int id, IVehicleMake vehicleMake);
+        Task DeleteVehicleMakeAsync(int id);
     }
 }
