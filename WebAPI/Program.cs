@@ -1,5 +1,6 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using AutoMapper.Contrib.Autofac.DependencyInjection;
 using DAL;
 using Model.Common;
 using Repository;
@@ -13,6 +14,7 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(
     builder =>
     {
+        builder.RegisterAutoMapper(typeof(Program).Assembly);
         builder.RegisterType<Model.VehicleModel>().As<IVehicleModel>();
         builder.RegisterType<Model.VehicleMake>().As<IVehicleMake>();
         builder.RegisterType<VehicleMakeRepository>().As<IVehicleMakeRepository>();
@@ -20,6 +22,7 @@ builder.Host.ConfigureContainer<ContainerBuilder>(
         builder.RegisterType<VehicleMakeService>().As<IVehicleMakeService>();
         builder.RegisterType<VehicleModelService>().As<IVehicleModelService>();
         builder.RegisterType<VehicleContext>();
+
     });
 // Add services to the container.
 

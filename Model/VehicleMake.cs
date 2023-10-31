@@ -22,5 +22,12 @@ namespace Model
             Name = name;
             Abrv = abrv;
         }
+
+        public VehicleMake(int id, string name, string? abrv)
+        {
+            Id = id;
+            Name = name;
+            Abrv = abrv;
+        }
     }
 }
