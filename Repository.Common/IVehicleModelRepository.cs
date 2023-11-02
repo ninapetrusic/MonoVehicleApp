@@ -11,7 +11,7 @@ namespace Repository.Common
     {
         Task<IEnumerable<IVehicleModel>> GetVehicleModelsAsync();
         Task<IVehicleModel> GetVehicleModelByIdAsync(int id);
-        Task InsertVehicleModelAsync(IVehicleModel vehicleModel);
+        Task<int> InsertVehicleModelAsync(IVehicleModel vehicleModel);
         Task DeleteVehicleModelAsync(int id);
         Task UpdateVehicleModelAsync(int id, IVehicleModel vehicleModel);
     }

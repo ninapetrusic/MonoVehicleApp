@@ -47,12 +47,13 @@ namespace Repository
 
         }
 
-        public async Task InsertVehicleMakeAsync(IVehicleMake vehicleMake)
+        public async Task<int> InsertVehicleMakeAsync(IVehicleMake vehicleMake)
         {
             //TODO: validation
-
-            _context.Makes.Add(_mapper.Map<VehicleMake>(vehicleMake));
+            DAL.VehicleMake make = _mapper.Map<DAL.VehicleMake>(vehicleMake);
+            _context.Makes.Add(make);
             await _context.SaveChangesAsync().ConfigureAwait(true);
+            return make.Id;
         }
         public async Task UpdateVehicleMakeAsync(int id, IVehicleMake vehicleMake)
         {

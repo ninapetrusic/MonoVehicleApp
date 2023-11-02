@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DAL;
 using Microsoft.EntityFrameworkCore;
+using Model;
 using Model.Common;
 using Repository.Common;
 using System;
@@ -26,7 +27,7 @@ namespace Repository
         {
             IVehicleModel? vehicleModel = await _getVehicleModelById(id);
             //map Model.VehicleModel to DAL.VehicleModel
-            VehicleModel vehicleModelMapped = _mapper.Map<VehicleModel>(vehicleModel);
+            DAL.VehicleModel vehicleModelMapped = _mapper.Map<DAL.VehicleModel>(vehicleModel);
             _context.Models.Remove(vehicleModelMapped);
             await _context.SaveChangesAsync().ConfigureAwait(true);
         }
@@ -47,12 +48,13 @@ namespace Repository
                 .ToListAsync().ConfigureAwait(true);
         }
 
-        public async Task InsertVehicleModelAsync(IVehicleModel vehicleModel)
+        public async Task<int> InsertVehicleModelAsync(IVehicleModel vehicleModel)
         {
             //TODO: validation
-
-            _context.Models.Add(_mapper.Map<VehicleModel>(vehicleModel)); ;
+            DAL.VehicleModel model = _mapper.Map<DAL.VehicleModel>(vehicleModel);
+            _context.Models.Add(model); ;
             await _context.SaveChangesAsync().ConfigureAwait(true);
+            return model.Id;
         }
 
         public async Task UpdateVehicleModelAsync(int id, IVehicleModel vehicleModel)
@@ -61,17 +63,17 @@ namespace Repository
             //TODO: validation
            
             _mapper.Map(vehicleModel, vehicleModelOld);
-            _context.Models.Update(_mapper.Map<VehicleModel>(vehicleModelOld));
+            _context.Models.Update(_mapper.Map<DAL.VehicleModel>(vehicleModelOld));
             await _context.SaveChangesAsync();
         }
 
         private async Task<IVehicleModel> _getVehicleModelById(int id)
         {
-            VehicleModel? vehicleModel = await _context.Models
+            DAL.VehicleModel? vehicleModel = await _context.Models
                 .AsNoTracking().Where(x => x.Id == id)
                 .FirstOrDefaultAsync().ConfigureAwait(true);
             //map DAL.VehicleModel to Model.VehicleModel
-            IVehicleModel vehicleModelMapped = _mapper.Map<IVehicleModel>(vehicleModel);
+            IVehicleModel vehicleModelMapped = _mapper.Map<Model.VehicleModel>(vehicleModel);
             if (vehicleModelMapped == null)
                 throw new KeyNotFoundException("VehicleModel not found");
             return vehicleModelMapped;
