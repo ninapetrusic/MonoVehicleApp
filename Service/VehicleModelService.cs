@@ -31,9 +31,10 @@ namespace Service
             return await vehicleModelRepository.GetVehicleModelsAsync();
         }
 
-        public async Task InsertVehicleModelAsync(IVehicleModel vehicleModel)
+        public async Task<bool> InsertVehicleModelAsync(IVehicleModel vehicleModel)
         {
-            await vehicleModelRepository.InsertVehicleModelAsync(vehicleModel);
+            return (await vehicleModelRepository.InsertVehicleModelAsync(vehicleModel) != 0);
+
         }
 
         public async Task UpdateVehicleModelAsync(int id, IVehicleModel vehicleModel)

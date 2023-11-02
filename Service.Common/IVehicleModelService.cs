@@ -11,7 +11,7 @@ namespace Service.Common
     {
         Task<IEnumerable<IVehicleModel>> GetVehicleModelsAsync();
         Task<IVehicleModel> GetVehicleModelByIdAsync(int id);
-        Task InsertVehicleModelAsync(IVehicleModel vehicleModel);
+        Task<bool> InsertVehicleModelAsync(IVehicleModel vehicleModel);
         Task UpdateVehicleModelAsync(int id, IVehicleModel vehicleModel);
         Task DeleteVehicleModelAsync(int id);
     }

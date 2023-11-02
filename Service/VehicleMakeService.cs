@@ -1,4 +1,5 @@
 ﻿using Model.Common;
+using Repository;
 using Repository.Common;
 using Service.Common;
 using System;
@@ -33,9 +34,9 @@ namespace Service
             return await vehicleMakeRepository.GetVehicleMakesAsync();
         }
 
-        public async Task InsertVehicleMakeAsync(IVehicleMake vehicleMake)
+        public async Task<bool> InsertVehicleMakeAsync(IVehicleMake vehicleMake)
         {
-            await vehicleMakeRepository.InsertVehicleMakeAsync(vehicleMake);
+            return (await vehicleMakeRepository.InsertVehicleMakeAsync(vehicleMake) != 0);
         }
 
         public async Task UpdateVehicleMakeAsync(int id, IVehicleMake vehicleMake)
