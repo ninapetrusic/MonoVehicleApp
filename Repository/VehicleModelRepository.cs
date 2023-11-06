@@ -44,8 +44,8 @@ namespace Repository
 
         public async Task<IEnumerable<IVehicleModel>> GetVehicleModelsAsync()
         {
-            return await _mapper.Map<DbSet<IVehicleModel>>(_context.Models)
-                .ToListAsync().ConfigureAwait(true);
+            List<DAL.VehicleModel> data = await _context.Models.ToListAsync().ConfigureAwait(true);
+            return _mapper.Map<List<DAL.VehicleModel>, List<IVehicleModel>>(data);
         }
 
         public async Task<int> InsertVehicleModelAsync(IVehicleModel vehicleModel)
@@ -73,7 +73,7 @@ namespace Repository
                 .AsNoTracking().Where(x => x.Id == id)
                 .FirstOrDefaultAsync().ConfigureAwait(true);
             //map DAL.VehicleModel to Model.VehicleModel
-            IVehicleModel vehicleModelMapped = _mapper.Map<Model.VehicleModel>(vehicleModel);
+            IVehicleModel vehicleModelMapped = _mapper.Map<DAL.VehicleModel, IVehicleModel>(vehicleModel);
             if (vehicleModelMapped == null)
                 throw new KeyNotFoundException("VehicleModel not found");
             return vehicleModelMapped;
