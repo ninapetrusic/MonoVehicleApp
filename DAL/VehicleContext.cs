@@ -29,6 +29,12 @@ namespace DAL
             modelBuilder.Entity<VehicleMake>()
             .Property(p => p.Id)
             .ValueGeneratedOnAdd();
+            modelBuilder.Entity<VehicleMake>()
+            .HasMany(e => e.Models)
+            .WithOne(e => e.VehicleMake)
+            .HasForeignKey(e => e.VehicleMakeId)
+            .IsRequired();
+
             modelBuilder.Entity<VehicleModel>()
             .Property(p => p.Id)
             .ValueGeneratedOnAdd();

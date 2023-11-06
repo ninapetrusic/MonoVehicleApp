@@ -9,6 +9,15 @@ namespace DAL
 {
     public class VehicleModel
     {
+        public int Id { get; set; }
+        public VehicleMake VehicleMake { get; set; } = null!;
+        public int VehicleMakeId { get; set; }
+        public string Name { get; set; } = null!;
+        public string? Abrv { get; set; }
+        private VehicleModel()
+        {
+        }
+
         public VehicleModel(int id, string name, string? abrv)
         {
             Id = id;
@@ -30,11 +39,5 @@ namespace DAL
             Name = name;
             Abrv = abrv;
         }
-
-        public int Id {  get; set; }
-        public VehicleMake VehicleMake { get; set; } = null!;
-        public int VehicleMakeId { get; set; } 
-        public string Name { get; set; } = null!;
-        public string? Abrv { get; set; }   
     }
 }

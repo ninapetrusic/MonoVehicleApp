@@ -13,6 +13,7 @@ namespace DAL
         public int Id { get; set; }
         public string Name { get; set; } = null!;
         public string? Abrv { get; set; }
+        public ICollection<VehicleModel> Models { get; } = new List<VehicleModel>();
         public VehicleMake(int id, string name, string? abrv)
         {
             Id = id;
