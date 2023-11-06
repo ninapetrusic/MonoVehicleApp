@@ -18,8 +18,6 @@ namespace Model
             CreateMap<DAL.VehicleMake, IVehicleMake>()
                .ConstructUsing(vehicleMakeDAL => new Model.VehicleMake(vehicleMakeDAL.Id, vehicleMakeDAL.Name, vehicleMakeDAL.Abrv))
                .ReverseMap().ConstructUsing(vehicleMake => new DAL.VehicleMake(vehicleMake.Id, vehicleMake.Name, vehicleMake.Abrv));
-            CreateMap<DbSet<IVehicleMake>, DbSet<DAL.VehicleMake>>()
-                .ReverseMap();
         }
     }
 }
