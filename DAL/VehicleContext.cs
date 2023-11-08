@@ -22,6 +22,7 @@ namespace DAL
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             options.UseNpgsql(Configuration.GetConnectionString("VehicleDB"));
+            options.UseLazyLoadingProxies();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -40,18 +41,18 @@ namespace DAL
             .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<VehicleMake>().HasData(
-                new VehicleMake(1, "Volkswagen", "Vw"),
-                new VehicleMake(2, "Dr. Ing. h. c. F. Porsche AG", "Porsche"),
-                new VehicleMake(3, "Toyota Motor Corporation", "Toyota"),
-                new VehicleMake(4, "Mazda"),
-                new VehicleMake(5, "Hyundai Motor Company", "Hyundai")
+                new VehicleMake { Id = 1, Name = "Volkswagen", Abrv = "Vw" },
+                new VehicleMake { Id = 2, Name = "Dr. Ing. h. c. F. Porsche AG", Abrv = "Porsche" },
+                new VehicleMake { Id = 3, Name = "Toyota Motor Corporation", Abrv = "Toyota" },
+                new VehicleMake { Id = 4, Name = "Mazda" },
+                new VehicleMake { Id = 5, Name = "Hyundai Motor Company", Abrv = "Hyundai" }
                 );
             modelBuilder.Entity<VehicleModel>().HasData(
-                new VehicleModel(1, "Golf Mk3", "Golf III", 1),
-                new VehicleModel(2, "924", 2),
-                new VehicleModel(3, "Celica", 3),
-                new VehicleModel(4, "RX-7", 4),
-                new VehicleModel(5, "i30 N", 5)
+                new VehicleModel { Id = 1, Name = "Golf Mk3", Abrv = "Golf III", VehicleMakeId = 1 },
+                new VehicleModel { Id = 2, Name = "924", VehicleMakeId = 2 },
+                new VehicleModel { Id = 3, Name = "Celica", VehicleMakeId = 3 },
+                new VehicleModel { Id = 4, Name = "RX-7", VehicleMakeId = 4 },
+                new VehicleModel { Id = 5, Name = "i30 N", VehicleMakeId = 5 }
                 );
         }
 
