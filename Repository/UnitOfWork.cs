@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DAL;
+using Microsoft.EntityFrameworkCore;
+using Repository.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -9,17 +11,22 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
 
-namespace DAL
+namespace Repository
 {
     public class UnitOfWork : IUnitOfWork
     {
         protected VehicleContext _context;
-        public UnitOfWork(VehicleContext context)
+        public IGenericRepository<VehicleMake> vehicleMakeRepo { get; }
+        public IGenericRepository<VehicleModel> vehicleModelRepo { get; }
+
+        public UnitOfWork(VehicleContext context, IGenericRepository<VehicleMake> vehicleMakeRepo, IGenericRepository<VehicleModel> vehicleModelRepo)
         {
             _context = context;
+            this.vehicleMakeRepo = vehicleMakeRepo;
+            this.vehicleModelRepo = vehicleModelRepo;
         }
 
-        public virtual Task<int> AddAsync<T>(T entity) where T : class
+        public Task<int> AddAsync<T>(T entity) where T : class
         {
             var dbEntityEntry = _context.Entry(entity);
             if (dbEntityEntry.State != EntityState.Detached)
@@ -33,7 +40,7 @@ namespace DAL
             return Task.FromResult(1);
         }
 
-        public virtual async Task<int> CommitAsync()
+        public async Task<int> CommitAsync()
         {
             int result = 0;
             using(TransactionScope scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
@@ -44,7 +51,7 @@ namespace DAL
             return result;
         }
 
-        public virtual Task<int> DeleteAsync<T>(T entity) where T : class
+        public Task<int> DeleteAsync<T>(T entity) where T : class
         {
             var entityEntry = _context.Entry(entity);
             if (entityEntry.State != EntityState.Deleted)
@@ -59,7 +66,7 @@ namespace DAL
             return Task.FromResult(1);
         }
 
-        public virtual Task<int> DeleteAsync<T>(int id) where T : class
+        public Task<int> DeleteAsync<T>(int id) where T : class
         {
             var entity = _context.Set<T>().Find(id);
             return (entity == null) ? Task.FromResult(0) : DeleteAsync<T>(entity);
@@ -70,7 +77,7 @@ namespace DAL
             _context.Dispose();
         }
 
-        public virtual Task<int> UpdateAsync<T>(T entity) where T : class
+        public Task<int> UpdateAsync<T>(T entity) where T : class
         {
             var entityEntry = _context.Entry(entity);
             if (entityEntry.State != EntityState.Detached)
