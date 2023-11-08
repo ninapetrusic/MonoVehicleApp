@@ -7,12 +7,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Common
 {
-    public interface IVehicleModelRepository : IDisposable
+    public interface IVehicleModelRepository : IGenericRepository<DAL.VehicleModel>
     {
-        Task<IEnumerable<IVehicleModel>> GetVehicleModelsAsync();
-        Task<IVehicleModel> GetVehicleModelByIdAsync(int id);
-        Task<int> InsertVehicleModelAsync(IVehicleModel vehicleModel);
-        Task DeleteVehicleModelAsync(int id);
-        Task UpdateVehicleModelAsync(int id, IVehicleModel vehicleModel);
     }
 }

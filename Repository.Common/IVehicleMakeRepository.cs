@@ -4,15 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 
 namespace Repository.Common
 {
-    public interface IVehicleMakeRepository : IDisposable
+    public interface IVehicleMakeRepository : IGenericRepository<DAL.VehicleMake>
     {
-        Task<IEnumerable<IVehicleMake>> GetVehicleMakesAsync();
-        Task<IVehicleMake> GetVehicleMakeByIdAsync(int id);
-        Task<int> InsertVehicleMakeAsync(IVehicleMake vehicleMake);
-        Task DeleteVehicleMakeAsync(int id);
-        Task UpdateVehicleMakeAsync(int id, IVehicleMake vehicleMake);
     }
 }
