@@ -1,4 +1,6 @@
-﻿using Model.Common;
+﻿using AutoMapper;
+using DAL;
+using Model.Common;
 using Repository;
 using Repository.Common;
 using Service.Common;
@@ -12,36 +14,72 @@ namespace Service
 {
     public class VehicleMakeService : IVehicleMakeService
     {
-        private IVehicleMakeRepository vehicleMakeRepository;
+        private IUnitOfWork _unitOfWork;
+        private IMapper _mapper;
 
-        public VehicleMakeService(IVehicleMakeRepository vehicleMakeRepository)
+        public VehicleMakeService(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            this.vehicleMakeRepository = vehicleMakeRepository;
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
-        public async Task DeleteVehicleMakeAsync(int id)
+        public async Task<bool> DeleteVehicleMakeAsync(int id)
         {
-            await vehicleMakeRepository.DeleteVehicleMakeAsync(id);
+            if (id > 0)
+            {
+                DAL.VehicleMake data = await _unitOfWork.vehicleMakeRepo.GetByIdAsync(id).ConfigureAwait(true);
+                if (data != null)
+                {
+                    await _unitOfWork.vehicleMakeRepo.Delete(data).ConfigureAwait(true);
+                    int result = await _unitOfWork.CommitAsync().ConfigureAwait(true);
+                    return result > 0;
+                }
+            }
+            return false;
         }
 
         public async Task<IVehicleMake> GetVehicleMakeByIdAsync(int id)
         {
-            return await vehicleMakeRepository.GetVehicleMakeByIdAsync(id);
+            if (id > 0)
+            {
+                DAL.VehicleMake data = await _unitOfWork.vehicleMakeRepo.GetByIdAsync(id).ConfigureAwait(true);
+                return _mapper.Map<DAL.VehicleMake, IVehicleMake>(data);
+            }
+            return null;
         }
 
         public async Task<IEnumerable<IVehicleMake>> GetVehicleMakesAsync()
         {
-            return await vehicleMakeRepository.GetVehicleMakesAsync();
+            IEnumerable<DAL.VehicleMake> data = await _unitOfWork.vehicleMakeRepo.GetAllAsync().ConfigureAwait(true);
+            return _mapper.Map<IEnumerable<DAL.VehicleMake>, IEnumerable<IVehicleMake>>(data);
         }
 
         public async Task<bool> InsertVehicleMakeAsync(IVehicleMake vehicleMake)
         {
-            return (await vehicleMakeRepository.InsertVehicleMakeAsync(vehicleMake) != 0);
+            if (vehicleMake != null)
+            {
+                DAL.VehicleMake vehicleMakeMapped = _mapper.Map<IVehicleMake, DAL.VehicleMake>(vehicleMake);
+                await _unitOfWork.vehicleMakeRepo.Insert(vehicleMakeMapped);
+                int result = await _unitOfWork.CommitAsync().ConfigureAwait(true);
+                return result > 0;
+            }
+            return false;
         }
 
-        public async Task UpdateVehicleMakeAsync(int id, IVehicleMake vehicleMake)
+        public async Task<bool> UpdateVehicleMakeAsync(int id, IVehicleMake vehicleMake)
         {
-            await vehicleMakeRepository.UpdateVehicleMakeAsync(id, vehicleMake);
+            if (vehicleMake != null)
+            {
+                DAL.VehicleMake vehicleMakeToUpdate = await _unitOfWork.vehicleMakeRepo.GetByIdAsync(id).ConfigureAwait(true);
+                if (vehicleMakeToUpdate != null)
+                {
+                    DAL.VehicleMake vehicleMakeMapped = _mapper.Map<IVehicleMake, DAL.VehicleMake>(vehicleMake);
+                    await _unitOfWork.vehicleMakeRepo.Update(vehicleMakeMapped);
+                    int result = await _unitOfWork.CommitAsync().ConfigureAwait(true);
+                    return result > 0;
+                }
+            }
+            return false;
         }
     }
 }

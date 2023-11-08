@@ -1,4 +1,6 @@
-﻿using Model.Common;
+﻿using AutoMapper;
+using DAL;
+using Model.Common;
 using Repository.Common;
 using Service.Common;
 using System;
@@ -11,35 +13,72 @@ namespace Service
 {
     public class VehicleModelService : IVehicleModelService
     {
-        private IVehicleModelRepository vehicleModelRepository;
-        public VehicleModelService(IVehicleModelRepository vehicleModelRepository)
+        private IUnitOfWork _unitOfWork;
+        private IMapper _mapper;
+
+        public VehicleModelService(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            this.vehicleModelRepository = vehicleModelRepository;
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
-        public async Task DeleteVehicleModelAsync(int id)
+
+        public async Task<bool> DeleteVehicleModelAsync(int id)
         {
-            await vehicleModelRepository.DeleteVehicleModelAsync(id);
+            if (id > 0)
+            {
+                DAL.VehicleModel data = await _unitOfWork.vehicleModelRepo.GetByIdAsync(id).ConfigureAwait(true);
+                if (data != null)
+                {
+                    await _unitOfWork.vehicleModelRepo.Delete(data).ConfigureAwait(true);
+                    int result = await _unitOfWork.CommitAsync().ConfigureAwait(true);
+                    return result > 0;
+                }
+            }
+            return false;
         }
 
         public async Task<IVehicleModel> GetVehicleModelByIdAsync(int id)
         {
-            return await vehicleModelRepository.GetVehicleModelByIdAsync(id);
+            if (id > 0)
+            {
+                DAL.VehicleModel data = await _unitOfWork.vehicleModelRepo.GetByIdAsync(id).ConfigureAwait(true);
+                return _mapper.Map<DAL.VehicleModel, IVehicleModel>(data);
+            }
+            return null;
         }
 
         public async Task<IEnumerable<IVehicleModel>> GetVehicleModelsAsync()
         {
-            return await vehicleModelRepository.GetVehicleModelsAsync();
+            IEnumerable<DAL.VehicleModel> data = await _unitOfWork.vehicleModelRepo.GetAllAsync().ConfigureAwait(true);
+            return _mapper.Map<IEnumerable<DAL.VehicleModel>, IEnumerable<IVehicleModel>>(data);
         }
 
         public async Task<bool> InsertVehicleModelAsync(IVehicleModel vehicleModel)
         {
-            return (await vehicleModelRepository.InsertVehicleModelAsync(vehicleModel) != 0);
-
+            if (vehicleModel != null)
+            {
+                DAL.VehicleModel vehicleModelMapped = _mapper.Map<IVehicleModel, DAL.VehicleModel>(vehicleModel);
+                await _unitOfWork.vehicleModelRepo.Insert(vehicleModelMapped);
+                int result = await _unitOfWork.CommitAsync().ConfigureAwait(true);
+                return result > 0;
+            }
+            return false;
         }
 
-        public async Task UpdateVehicleModelAsync(int id, IVehicleModel vehicleModel)
+        public async Task<bool> UpdateVehicleModelAsync(int id, IVehicleModel vehicleModel)
         {
-            await vehicleModelRepository.UpdateVehicleModelAsync(id, vehicleModel);
+            if (vehicleModel != null)
+            {
+                DAL.VehicleModel vehicleModelToUpdate = await _unitOfWork.vehicleModelRepo.GetByIdAsync(id).ConfigureAwait(true);
+                if (vehicleModelToUpdate != null)
+                {
+                    DAL.VehicleModel vehicleModelMapped = _mapper.Map<IVehicleModel, DAL.VehicleModel>(vehicleModel);
+                    await _unitOfWork.vehicleModelRepo.Update(vehicleModelMapped);
+                    int result = await _unitOfWork.CommitAsync().ConfigureAwait(true);
+                    return result > 0;
+                }
+            }
+            return false;
         }
     }
 }
