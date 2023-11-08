@@ -10,6 +10,7 @@ using Repository;
 using Repository.Common;
 using Service;
 using Service.Common;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,9 @@ builder.Host.ConfigureContainer<ContainerBuilder>(
         builder.RegisterType<VehicleModelRepository>().As<IVehicleModelRepository>();
         builder.RegisterType<VehicleMakeService>().As<IVehicleMakeService>();
         builder.RegisterType<VehicleModelService>().As<IVehicleModelService>();
+        builder.RegisterType<VehicleMakeRepository>().As<IGenericRepository<DAL.VehicleMake>>();
+        builder.RegisterType<VehicleModelRepository>().As<IGenericRepository<DAL.VehicleModel>>();
+        builder.RegisterType<UnitOfWork>().As<IUnitOfWork>();
         builder.RegisterType<VehicleContext>();
     });
 // Add services to the container. 
@@ -31,6 +35,12 @@ var config = new MapperConfiguration(c => {
     c.AddProfile<VehicleMakeProfile>();
     c.AddProfile<VehicleModelProfile>();
 });
+//
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
+//
 builder.Services.AddSingleton<IMapper>(s => config.CreateMapper());
 
 builder.Services.AddControllers();
