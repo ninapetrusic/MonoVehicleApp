@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DAL;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations.Operations.Builders;
 using Model.Common;
 using System;
 using System.Collections.Generic;
@@ -16,8 +17,8 @@ namespace Model
         public VehicleMakeProfile() 
         {
             CreateMap<DAL.VehicleMake, IVehicleMake>()
-               .ConstructUsing(vehicleMakeDAL => new Model.VehicleMake(vehicleMakeDAL.Id, vehicleMakeDAL.Name, vehicleMakeDAL.Abrv))
-               .ReverseMap().ConstructUsing(vehicleMake => new DAL.VehicleMake(vehicleMake.Id, vehicleMake.Name, vehicleMake.Abrv));
+                .ConstructUsing(n => new VehicleMake());
+            CreateMap<IVehicleMake, DAL.VehicleMake>();
         }
     }
 }

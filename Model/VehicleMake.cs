@@ -13,21 +13,6 @@ namespace Model
         public int Id { get; set; }
         public string Name { get; set; } = null!;
         public string? Abrv {  get; set; }
-
-        public VehicleMake(string name) {
-            Name = name;
-        }
-        public VehicleMake(string name, string abrv)
-        {
-            Name = name;
-            Abrv = abrv;
-        }
-
-        public VehicleMake(int id, string name, string? abrv)
-        {
-            Id = id;
-            Name = name;
-            Abrv = abrv;
-        }
+        public virtual ICollection<IVehicleModel> Models {  get; } = new List<IVehicleModel>();
     }
 }

@@ -10,27 +10,10 @@ namespace Model
     public class VehicleModel : IVehicleModel
     {
         public int Id { get; set; }
-        public int VehicleMakeId { get; set; }
+        public virtual int VehicleMakeId { get; set; }
         public string Name { get; set; } = null!;
         public string? Abrv { get; set; }
+        public virtual IVehicleMake VehicleMake { get; set; } = null!;
 
-        public VehicleModel(string name, int vehicleMakeId) 
-        {
-            Name = name;
-            VehicleMakeId = vehicleMakeId;
-        }
-        public VehicleModel(string name, string abrv, int vehicleMakeId)
-        {
-            Name = name;
-            Abrv = abrv;
-            VehicleMakeId = vehicleMakeId;
-        }
-
-        public VehicleModel(int id, string name, string? abrv)
-        {
-            Id = id;
-            Name = name;
-            Abrv = abrv;
-        }
     }
 }
