@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\DAL\DAL.csproj" />
     <ProjectReference Include="..\Repository.Common\Repository.Common.csproj" />
     <ProjectReference Include="..\Repository\Repository.csproj" />

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Common;
+using Microsoft.AspNetCore.Mvc;
+using Model;
 using Model.Common;
 using Service.Common;
 
@@ -15,9 +17,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllModels()
+        public async Task<IActionResult> GetAllModels([FromQuery] QueryParams queryParams)
         {
-            IEnumerable<IVehicleModel> models = await _modelService.GetVehicleModelsAsync();
+            IEnumerable<IVehicleModel> models = await _modelService.GetVehicleModelsAsync(queryParams);
             return Ok(models);
         }
 
@@ -29,14 +31,14 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateModel(IVehicleModel vehicleModel)
+        public async Task<IActionResult> CreateModel(VehicleModelCreate vehicleModel)
         {
             bool created = await _modelService.InsertVehicleModelAsync(vehicleModel);
             return (created) ? Ok(vehicleModel) : BadRequest();
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateModel(int id, IVehicleModel vehicleModel)
+        public async Task<IActionResult> UpdateModel(int id, VehicleModelCreate vehicleModel)
         {
             await _modelService.UpdateVehicleModelAsync(id, vehicleModel);
             return Ok(vehicleModel);

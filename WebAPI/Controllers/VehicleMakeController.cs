@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Common;
+using Microsoft.AspNetCore.Mvc;
+using Model;
 using Model.Common;
 using Service.Common;
 
@@ -14,9 +16,9 @@ namespace WebAPI.Controllers
             _makeService = makeService;
         }
         [HttpGet]  
-        public async Task<IActionResult> GetAllMakes()
+        public async Task<IActionResult> GetAllMakes([FromQuery] QueryParams queryParams)
         {
-            IEnumerable<IVehicleMake> makes = await _makeService.GetVehicleMakesAsync();
+            IEnumerable<IVehicleMake> makes = await _makeService.GetVehicleMakesAsync(queryParams);
             return Ok(makes);
         }
 
@@ -28,14 +30,14 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateMake(IVehicleMake vehicleMake)
+        public async Task<IActionResult> CreateMake(VehicleMakeCreate vehicleMake)
         {
             bool created = await _makeService.InsertVehicleMakeAsync(vehicleMake);
             return (created) ? Ok(vehicleMake) : BadRequest();
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateMake(int id, IVehicleMake vehicleMake)
+        public async Task<IActionResult> UpdateMake(int id, VehicleMakeCreate vehicleMake)
         {
             await _makeService.UpdateVehicleMakeAsync(id, vehicleMake);
             return Ok(vehicleMake);
