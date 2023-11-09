@@ -1,4 +1,6 @@
-﻿using Model.Common;
+﻿using Common;
+using Model;
+using Model.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +11,10 @@ namespace Service.Common
 {
     public interface IVehicleModelService
     {
-        Task<IEnumerable<IVehicleModel>> GetVehicleModelsAsync();
+        Task<IEnumerable<IVehicleModel>> GetVehicleModelsAsync(QueryParams queryParams);
         Task<IVehicleModel> GetVehicleModelByIdAsync(int id);
-        Task<bool> InsertVehicleModelAsync(IVehicleModel vehicleModel);
-        Task<bool> UpdateVehicleModelAsync(int id, IVehicleModel vehicleModel);
+        Task<bool> InsertVehicleModelAsync(VehicleModelCreate vehicleModel);
+        Task<bool> UpdateVehicleModelAsync(int id, VehicleModelCreate vehicleModel);
         Task<bool> DeleteVehicleModelAsync(int id);
     }
 }

@@ -19,6 +19,9 @@ namespace Model
             CreateMap<DAL.VehicleMake, IVehicleMake>()
                 .ConstructUsing(n => new VehicleMake());
             CreateMap<IVehicleMake, DAL.VehicleMake>();
+            CreateMap<VehicleMakeCreate, DAL.VehicleMake>();
+            CreateMap<DAL.VehicleMake, DAL.VehicleMake>()
+                .ForMember(x => x.Id, opt => opt.Ignore());
         }
     }
 }

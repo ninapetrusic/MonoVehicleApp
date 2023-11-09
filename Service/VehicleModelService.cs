@@ -1,13 +1,9 @@
 ﻿using AutoMapper;
-using DAL;
+using Common;
+using Model;
 using Model.Common;
 using Repository.Common;
 using Service.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service
 {
@@ -29,7 +25,7 @@ namespace Service
                 DAL.VehicleModel data = await _unitOfWork.vehicleModelRepo.GetByIdAsync(id).ConfigureAwait(true);
                 if (data != null)
                 {
-                    await _unitOfWork.vehicleModelRepo.Delete(data).ConfigureAwait(true);
+                    await _unitOfWork.DeleteAsync(data).ConfigureAwait(true);
                     int result = await _unitOfWork.CommitAsync().ConfigureAwait(true);
                     return result > 0;
                 }
@@ -47,35 +43,42 @@ namespace Service
             return null;
         }
 
-        public async Task<IEnumerable<IVehicleModel>> GetVehicleModelsAsync()
+        public async Task<IEnumerable<IVehicleModel>> GetVehicleModelsAsync(QueryParams queryParams)
         {
-            IEnumerable<DAL.VehicleModel> data = await _unitOfWork.vehicleModelRepo.GetAllAsync().ConfigureAwait(true);
+            IEnumerable<DAL.VehicleModel> data = await _unitOfWork.vehicleModelRepo.GetAllAsync(queryParams).ConfigureAwait(true);
             return _mapper.Map<IEnumerable<DAL.VehicleModel>, IEnumerable<IVehicleModel>>(data);
         }
 
-        public async Task<bool> InsertVehicleModelAsync(IVehicleModel vehicleModel)
+        public async Task<bool> InsertVehicleModelAsync(VehicleModelCreate vehicleModel)
         {
             if (vehicleModel != null)
             {
-                DAL.VehicleModel vehicleModelMapped = _mapper.Map<IVehicleModel, DAL.VehicleModel>(vehicleModel);
-                await _unitOfWork.vehicleModelRepo.Insert(vehicleModelMapped);
-                int result = await _unitOfWork.CommitAsync().ConfigureAwait(true);
-                return result > 0;
+                DAL.VehicleModel vehicleModelMapped = _mapper.Map<VehicleModelCreate, DAL.VehicleModel>(vehicleModel);
+                int addRes = await _unitOfWork.AddAsync(vehicleModelMapped);
+                if (addRes > 0)
+                {
+                    int result = await _unitOfWork.CommitAsync().ConfigureAwait(true);
+                    return result > 0;
+                }
             }
             return false;
         }
 
-        public async Task<bool> UpdateVehicleModelAsync(int id, IVehicleModel vehicleModel)
+        public async Task<bool> UpdateVehicleModelAsync(int id, VehicleModelCreate vehicleModel)
         {
             if (vehicleModel != null)
             {
                 DAL.VehicleModel vehicleModelToUpdate = await _unitOfWork.vehicleModelRepo.GetByIdAsync(id).ConfigureAwait(true);
                 if (vehicleModelToUpdate != null)
                 {
-                    DAL.VehicleModel vehicleModelMapped = _mapper.Map<IVehicleModel, DAL.VehicleModel>(vehicleModel);
-                    await _unitOfWork.vehicleModelRepo.Update(vehicleModelMapped);
-                    int result = await _unitOfWork.CommitAsync().ConfigureAwait(true);
-                    return result > 0;
+                    DAL.VehicleModel vehicleModelMapped = _mapper.Map<VehicleModelCreate, DAL.VehicleModel>(vehicleModel);
+                    _mapper.Map(vehicleModelMapped, vehicleModelToUpdate);
+                    int updateRes = await _unitOfWork.UpdateAsync(vehicleModelMapped).ConfigureAwait(true);
+                    if (updateRes > 0)
+                    {
+                        int result = await _unitOfWork.CommitAsync().ConfigureAwait(true);
+                        return result > 0;
+                    }
                 }
             }
             return false;
