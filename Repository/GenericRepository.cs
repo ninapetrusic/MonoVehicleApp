@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using Common;
 using DAL;
 using Microsoft.EntityFrameworkCore;
 using Repository.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,14 +26,7 @@ namespace Repository
             _mapper = mapper;
             dbSet = _context.Set<T>();
         }
-
-        public Task Delete(T entity)
-        {
-            dbSet.Remove(entity);
-            return Task.CompletedTask;
-        }
-
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public virtual async Task<IEnumerable<T>> GetAllAsync(QueryParams queryParams)
         {
             return await dbSet.ToListAsync().ConfigureAwait(true);
         }
@@ -41,15 +36,5 @@ namespace Repository
             return await dbSet.FindAsync(id).ConfigureAwait(true);
         }
 
-        public async Task<T> Insert(T entity)
-        {
-            await dbSet.AddAsync(entity).ConfigureAwait(true);
-            return entity;
-        }
-
-        public async Task Update(T entity)
-        {
-            dbSet.Update(entity);
-        }
     }
 }
