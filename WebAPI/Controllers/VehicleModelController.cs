@@ -40,15 +40,15 @@ namespace WebAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateModel(int id, VehicleModelCreate vehicleModel)
         {
-            await _modelService.UpdateVehicleModelAsync(id, vehicleModel);
-            return Ok(vehicleModel);
+            bool updated = await _modelService.UpdateVehicleModelAsync(id, vehicleModel);
+            return (updated) ? Ok(vehicleModel) : BadRequest();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteModel(int id)
         {
-            await _modelService.DeleteVehicleModelAsync(id);
-            return Ok();    
+            bool deleted = await _modelService.DeleteVehicleModelAsync(id);
+            return (deleted) ? Ok() : BadRequest();    
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Model
     {
         [Required]
         public String Name { get; set; }
-        public String Abrv {  get; set; }
+        public String? Abrv {  get; set; }
         [Required]
         public int VehicleMakeId { get; set; }
     }
